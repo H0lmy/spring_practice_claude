@@ -6,24 +6,29 @@ import com.max.bookwishlist.exception.BookNotFoundException;
 import com.max.bookwishlist.model.Book;
 
 import com.max.bookwishlist.repository.BookRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+
 import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BookService {
     private final BookRepository bookRepository;
 
-    public List<Book> getAllBooks() {
-        return  bookRepository.findAll();
+    public Page<Book> getAllBooks(Pageable pageable) {
+        return  bookRepository.findAll(pageable);
     }
+
 
     public Book getBookById(Long id) {
         return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+    }
+
+    public Page<Book> searchBooks(String keyword, Pageable pageable) {
+        return bookRepository.findByTitleContainingIgnoreCase(keyword,pageable);
     }
 
     public Book createBook(CreateBookRequest request) {

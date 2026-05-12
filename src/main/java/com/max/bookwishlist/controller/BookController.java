@@ -1,13 +1,17 @@
 package com.max.bookwishlist.controller;
 
 import com.max.bookwishlist.dto.CreateBookRequest;
+import com.max.bookwishlist.dto.PageResponse;
 import com.max.bookwishlist.dto.UpdateBookRequest;
 import com.max.bookwishlist.model.Book;
 import com.max.bookwishlist.service.BookService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+
+
 
 @RestController
 public class BookController {
@@ -21,9 +25,10 @@ public class BookController {
 
     }
     @GetMapping("/books")
-    public List<Book> getBooks() {
-
-         return bookService.getAllBooks();
+    public PageResponse<Book> getBooks(@RequestParam(required = false) String keyword, Pageable pageable) {
+        Page<Book> page  = (keyword!=null && !keyword.isBlank()) ? bookService.searchBooks(keyword,pageable):
+                bookService.getAllBooks(pageable);
+        return PageResponse.from(page);
     }
 
     @GetMapping("/books/{id}")
@@ -42,6 +47,9 @@ public class BookController {
         return ResponseEntity.noContent().build();
 
     }
+
+
+
 
 
 
