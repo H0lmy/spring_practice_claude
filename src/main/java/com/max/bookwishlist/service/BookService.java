@@ -4,12 +4,13 @@ import com.max.bookwishlist.dto.CreateBookRequest;
 import com.max.bookwishlist.dto.UpdateBookRequest;
 import com.max.bookwishlist.exception.BookNotFoundException;
 import com.max.bookwishlist.model.Book;
-import lombok.Getter;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Slf4j
 @Service
 public class BookService {
     private final List<Book> books = new ArrayList<>(List.of(
@@ -34,12 +35,14 @@ public class BookService {
     }
 
     public Book createBook(CreateBookRequest request) {
+        log.info("Creating a new book with title{}", request.getTitle());
         Book book = new Book();
         book.setId(nextId++);
         book.setAuthor(request.getAuthor());
         book.setYear(request.getYear());
         book.setTitle(request.getTitle());
         books.add(book);
+        log.info("Created a new book with title {}", book.getTitle());
         return book;
     }
 

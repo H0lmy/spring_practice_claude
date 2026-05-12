@@ -4,6 +4,7 @@ import com.max.bookwishlist.dto.CreateBookRequest;
 import com.max.bookwishlist.dto.UpdateBookRequest;
 import com.max.bookwishlist.model.Book;
 import com.max.bookwishlist.service.BookService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -15,7 +16,7 @@ public class BookController {
         this.bookService = bookService;
     }
     @PostMapping("/books")
-    public Book createBook(@RequestBody CreateBookRequest request){
+    public Book createBook(@Valid @RequestBody CreateBookRequest request){
         return bookService.createBook(request);
 
     }
@@ -31,7 +32,7 @@ public class BookController {
     }
 
     @PutMapping("/books/{id}")
-    public Book updateBookById(@PathVariable Long id, @RequestBody UpdateBookRequest request){
+    public Book updateBookById(@PathVariable Long id,@Valid @RequestBody UpdateBookRequest request){
         return bookService.updateBook(id,request);
     }
 
