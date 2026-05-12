@@ -1,51 +1,33 @@
 package com.max.bookwishlist.model;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+@Entity
+@Table(name = "books")
+@Getter
+@Setter
 public class Book {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, length = 200)
     private String title;
+    @Column(nullable = false, length = 100)
     private String author;
+    @Column(name = "publication_year", nullable = false)
     private Integer year;
 
     public Book() {
 
     }
+
     public Book(Long id, String title, String author, Integer year) {
         this.id = id;
         this.title = title;
         this.author = author;
-        this.year = year;
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
         this.year = year;
     }
 
