@@ -5,18 +5,17 @@ import com.max.bookwishlist.dto.UpdateBookRequest;
 import com.max.bookwishlist.exception.BookNotFoundException;
 import com.max.bookwishlist.model.Book;
 
+import com.max.bookwishlist.model.Wishlist;
 import com.max.bookwishlist.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-
-import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BookService {
     private final BookRepository bookRepository;
+    private final WishlistService wishlistService;
 
     public Page<Book> getAllBooks(Pageable pageable) {
         return  bookRepository.findAll(pageable);
@@ -32,10 +31,12 @@ public class BookService {
     }
 
     public Book createBook(CreateBookRequest request) {
+        Wishlist wishlist = wishlistService.getWishlistById(request.getWishlistId()) ;
         Book book = new Book();
         book.setAuthor(request.getAuthor());
         book.setYear(request.getYear());
         book.setTitle(request.getTitle());
+        book.setWishlist(wishlist);
         return bookRepository.save(book);
     }
 

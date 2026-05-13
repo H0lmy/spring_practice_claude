@@ -20,6 +20,10 @@ public class Book {
     @Column(name = "publication_year", nullable = false)
     private Integer year;
 
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "wishlist_id",nullable = false)
+    private Wishlist wishlist;
+
     public Book() {
 
     }

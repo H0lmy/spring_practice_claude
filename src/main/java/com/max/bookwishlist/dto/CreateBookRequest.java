@@ -2,8 +2,6 @@ package com.max.bookwishlist.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 public class CreateBookRequest {
@@ -17,5 +15,8 @@ public class CreateBookRequest {
     @Min(value = 1000, message = "Year must be at least 1000")
     @Max(value = 2100, message = "Year must be at most 2100")
     private Integer year;
+
+    @NotNull(message = "Wishlist ID is required")
+    private Long wishlistId;
 
 }
