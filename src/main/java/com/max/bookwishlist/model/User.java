@@ -19,8 +19,13 @@ public class User {
     @Column( nullable = false,length = 100)
     private String username;
 
+
+
     @Column( nullable = false,length = 150,unique = true)
     private String email;
+
+    @Column( nullable = false)
+    private String password;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Wishlist> wishlists = new ArrayList<>();

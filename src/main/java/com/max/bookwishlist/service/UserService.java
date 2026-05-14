@@ -7,6 +7,7 @@ import com.max.bookwishlist.model.User;
 import com.max.bookwishlist.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -32,7 +34,7 @@ public class UserService {
         User user = new User();
         user.setEmail(createUserRequest.getEmail());
         user.setUsername(createUserRequest.getUsername());
-
+        user.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
         User saved  = userRepository.save(user);
         return saved;
 
