@@ -10,6 +10,7 @@ import com.max.bookwishlist.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
@@ -30,8 +31,8 @@ public class BookService {
         return bookRepository.findByTitleContainingIgnoreCase(keyword,pageable);
     }
 
-    public Book createBook(CreateBookRequest request) {
-        Wishlist wishlist = wishlistService.getWishlistById(request.getWishlistId()) ;
+    public Book createBook(CreateBookRequest request,Long id) {
+        Wishlist wishlist = wishlistService.getWishlistOwnedBy(request.getWishlistId(), id);
         Book book = new Book();
         book.setAuthor(request.getAuthor());
         book.setYear(request.getYear());
@@ -54,5 +55,14 @@ public class BookService {
         }
         bookRepository.deleteById(id);
 
+    }
+
+    public Book getBookOwnedBy(Long bookId, Long userId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException(bookId));
+        if (!book.getWishlist().getUser().getId().equals(userId)) {
+            throw new AccessDeniedException("You don't have permission to access this book");
+        }
+        return book;
     }
 }

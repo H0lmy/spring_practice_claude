@@ -7,6 +7,7 @@ import com.max.bookwishlist.model.User;
 import com.max.bookwishlist.model.Wishlist;
 import com.max.bookwishlist.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,6 +53,14 @@ public class WishlistService {
     public List<Wishlist> getWishlistsByUserId(Long userId) {
         userService.getUserById(userId);
         return wishlistRepository.findByUserId(userId);
+    }
+
+    public Wishlist getWishlistOwnedBy(Long wishlistId,Long userId) {
+        Wishlist wishlist = wishlistRepository.findById(wishlistId).orElseThrow(() -> new WishlistNotFoundException(wishlistId));
+        if(!wishlist.getUser().getId().equals(userId)){
+            throw new AccessDeniedException("You don't have permission to access this wishlist");
+        }
+        return wishlist;
     }
 
 
