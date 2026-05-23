@@ -25,7 +25,6 @@ public class BookController {
     @PostMapping("/books")
     public BookResponse createBook(@Valid @RequestBody CreateBookRequest request,@AuthenticationPrincipal UserPrincipal principal){
         return BookResponse.from(bookService.createBook(request,principal.getId())) ;
-
     }
     @GetMapping("/books")
     public PageResponse<BookResponse> getBooks(@RequestParam(required = false) String keyword, Pageable pageable) {

@@ -1,6 +1,7 @@
 package com.max.bookwishlist.security;
 
 import com.max.bookwishlist.model.User;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-
+@Getter
 @RequiredArgsConstructor
 public class UserPrincipal implements UserDetails {
     private final User user;
