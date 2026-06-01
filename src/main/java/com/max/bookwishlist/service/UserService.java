@@ -1,12 +1,16 @@
 package com.max.bookwishlist.service;
 
+import com.max.bookwishlist.dto.ChangePasswordRequest;
 import com.max.bookwishlist.dto.CreateUserRequest;
 import com.max.bookwishlist.dto.UpdateUserRequest;
 import com.max.bookwishlist.exception.UserNotFoundException;
+import com.max.bookwishlist.model.Role;
 import com.max.bookwishlist.model.User;
+import com.max.bookwishlist.repository.RefreshTokenRepository;
 import com.max.bookwishlist.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +22,7 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -54,5 +59,25 @@ public class UserService {
             throw new UserNotFoundException(id);
         }
         userRepository.deleteById(id);
+    }
+
+    public void changePassword(Long userId, ChangePasswordRequest changePasswordRequest) {
+        User user  = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException(userId));
+
+        if(!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
+            throw new AccessDeniedException("New password does not match old password");
+        }
+
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        userRepository.save(user);
+
+        refreshTokenRepository.revokeAllByUserId(userId);
+    }
+
+    public User promoteToAdmin(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        user.setRole(Role.ADMIN);
+        return userRepository.save(user);
     }
 }

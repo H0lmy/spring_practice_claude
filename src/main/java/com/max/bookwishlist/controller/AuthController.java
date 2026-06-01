@@ -1,9 +1,6 @@
 package com.max.bookwishlist.controller;
 
-import com.max.bookwishlist.dto.LoginRequest;
-import com.max.bookwishlist.dto.LoginResponse;
-import com.max.bookwishlist.dto.RefreshTokenRequest;
-import com.max.bookwishlist.dto.UserResponse;
+import com.max.bookwishlist.dto.*;
 import com.max.bookwishlist.model.User;
 import com.max.bookwishlist.security.UserPrincipal;
 import com.max.bookwishlist.service.AuthService;
@@ -45,5 +42,11 @@ public class AuthController {
     @PostMapping("/me")
     UserResponse getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         return UserResponse.from(userService.getUserById(userPrincipal.getId()));
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest,@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        userService.changePassword(userPrincipal.getId(),changePasswordRequest);
+        return ResponseEntity.noContent().build();
     }
 }
